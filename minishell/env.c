@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 14:58:25 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/09 16:45:14 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/11 02:26:35 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ void get_env_list(t_env **env, char **envp)
 	while (envp[i])
 	{
 		key = get_key(envp[i], get_index(envp[i], '=')); // to be freed
-		value = get_value(envp[i], get_index(envp[i], '=') + 1);
-		pair = malloc(sizeof(t_env));
+		value = get_value(envp[i], get_index(envp[i], '=') + 1); // to be freed
+		pair = malloc(sizeof(t_env)); // to be freed
 		if (!pair)
 			return ;
 		pair->key = key;
@@ -100,11 +100,5 @@ void get_env_list(t_env **env, char **envp)
 		pair->next = 0x0;
 		add_env(env, pair);
 		i += 1;
-	}
-	t_env *tmp = *env;
-	while (tmp)
-	{
-		printf("%s=%s\n", tmp->key, tmp->value);
-		tmp = tmp->next;
 	}
 }

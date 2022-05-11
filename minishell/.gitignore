@@ -1,5 +1,2 @@
-*.o
 tags
-minishell
-a.out
-a.out*
+*.o

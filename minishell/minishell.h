@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:53:20 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/09 15:23:33 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/11 02:30:46 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <readline/readline.h>
 typedef enum
 {
-	SPACE,
 	APPEND,
 	GREAT,
 	LESS,
@@ -77,7 +76,7 @@ int			ft_strlen(char *str);
 int			not_in(char c, char *str);
 char		*ft_strdup(char *src);
 char		*ft_strndup(const char *str, int size);
-void		tokenize(char *line, t_token **tokens);
+int			tokenize(char *line, t_token **tokens);
 t_token	*create_token(int type, char *value);
 void 		drop_tokens_err(t_token **tokens);
 int			is_pipe(char *line, t_token **tokens);
@@ -95,3 +94,4 @@ int			is_quote(char *line, t_token **tokens);
 void		print_tokens(t_token *tokens);
 void		push_back(t_token **head, t_token *token);
 void		get_env_list(t_env **env_list, char **env);
+int			purge(t_token **tokens);

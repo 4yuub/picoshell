@@ -32,10 +32,11 @@ int main(int ac, char **av, char **env)
 		cmd = readline("awbx$ "); // to be freed
 		if (!cmd)
 			break ;
-		tokenize(cmd, &tokens); // to be freed
+		if (tokenize(cmd, &tokens))
+					print_tokens(tokens);
+		// to be freed
 		free(cmd);
 		//expande(tokens, env); // to be freed
-		print_tokens(tokens);
 		//parse(&tokens);
 		//drop tokens 
 		tokens = 0x0;
