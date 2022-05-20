@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:05:12 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/20 20:13:49 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/20 20:35:18 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int is_quote(char *line, t_token **tokens)
 			i += 1;
 	}
 	if (line[i] && line[i] == '\'')
-		push_back(tokens, create_token(QUOTE, ft_strndup(line, i + 1)));
+		push_back(tokens, create_token(QUOTE, ft_strndup(line + 1, i - 1)));
 	else
 		return (-1);
 	return (i + 1);
@@ -126,7 +126,7 @@ int is_dquote(char *line, t_token **tokens)
 			i += 1;
 	}
 	if (line[i] && line[i] == '"')
-		push_back(tokens, create_token(DQUOTE, ft_strndup(line, i + 1)));
+		push_back(tokens, create_token(DQUOTE, ft_strndup(line + 1, i - 1)));
 	else
 		return (-1);
 	return (i + 1);
