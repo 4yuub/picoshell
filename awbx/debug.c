@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:41:45 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/15 10:41:45 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/20 20:15:25 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void print_tokens(t_token *tokens)
 		else if (tokens->type == HERDOC)
 			printf("[HERDOC]\n");
 		else if (tokens->type == QUOTE)
-			printf("[QUOTE]\n");
+			printf("[QUOTE] : %s\n", tokens->value);
 		else if (tokens->type == DQUOTE)
-			printf("[DQUOTE]\n");
+			printf("[DQUOTE] :%s\n", tokens->value);
 		else if (tokens->type == DOLLAR)
 			printf("[DOLLAR]\n");
 		else if (tokens->type == PIPE)

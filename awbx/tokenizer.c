@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:02:22 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/15 10:02:22 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:39:24 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,25 @@ int tokenize(t_token **tokens, char *line)
 		else if (line[i] == '<')
 			i += is_less(&line[i], tokens);
 		else if (line[i] == '\'')
-			i += is_quote(&line[i], tokens);
+		{
+			tmp = is_quote(&line[i], tokens); // free linked lists
+			if (tmp == -1)
+			{
+				printf("missing \'\n");
+				return (0);
+			}
+			i += tmp;
+		}
 		else if (line[i] == '"')
-			i += is_dquote(&line[i], tokens);
+		{
+			tmp = is_dquote(&line[i], tokens); // free linked lists
+			if (tmp == -1)
+			{
+				printf("missing \"\n");
+				return (0);
+			}
+			i += tmp;
+		}
 		else if (line[i] == '$')
 			i += is_dollar(&line[i], tokens);
 		else if (line[i] == '|')
