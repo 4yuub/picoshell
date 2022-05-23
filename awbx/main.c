@@ -28,8 +28,8 @@ int main(int ac, char **av, char **env)
 			break ;
 		if (!tokenize(&tokens, cmd))
 			continue;
-		/** if (!expande(&tokens, env_list)) */
-		/**   continue; */
+		if (!parse(tokens))
+			continue;
 		print_tokens(tokens);
 		printf("\n------\n");
 		print_rev_tokens(tokens);

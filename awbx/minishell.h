@@ -6,13 +6,14 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 09:54:10 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/15 09:54:10 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/23 15:04:19 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 typedef enum
 {
@@ -50,6 +51,11 @@ typedef struct s_token
 	struct	s_token	*prev;
 } t_token;
 
+typedef struct s_cmd_tree
+{
+	int type;
+}t_cmd_tree;
+
 	/*	str_utils	*/
 char	*ft_strdup(char *s);
 char	*ft_strndup(const char *str, int size);
@@ -73,6 +79,8 @@ int		is_word(char *line, t_token **tokens);
 t_token	*create_token(int type, char *value);
 t_token *get_token(t_token **tokens, int i);
 void		drop_token(t_token *token);
+int	has_redirections(t_token *tokens);
+
 
 
 	/*	env	*/

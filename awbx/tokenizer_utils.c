@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:05:12 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/20 20:35:18 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/05/23 14:40:57 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	is_less(char *line, t_token **tokens)
 	if (line[i + 1] == '<')
 	{
 		push_back(tokens, create_token(HERDOC, ft_strdup("<<"))); // to be freed
+		
 		return (2);
 	}
 	push_back(tokens, create_token(LESS, ft_strdup("<"))); // to be freed
@@ -241,4 +242,19 @@ int is_word(char *line, t_token **tokens)
 		i++;
 	push_back(tokens, create_token(WORD, ft_strndup(line, i))); // to be freed
 	return (i);
+}
+
+int has_redirections(t_token *tokens)
+{
+	int res;
+
+	res = 0;
+	while (tokens)
+	{
+		if (tokens->type == GREAT || tokens->type == LESS || tokens->type == HERDOC || tokens->type == APPEND)
+			return (res);
+		tokens = tokens->next;
+		res += 1;
+	}
+	return (-1);
 }
