@@ -49,6 +49,7 @@ typedef struct s_token
 	char						*value;
 	struct	s_token *next;
 	struct	s_token	*prev;
+	int							visited;
 } t_token;
 
 typedef struct s_cmd_tree
@@ -56,11 +57,20 @@ typedef struct s_cmd_tree
 	int type;
 }t_cmd_tree;
 
+typedef struct s_redir_node
+{
+	t_cmd_tree	*sub;
+	char				*file;
+	int					flag;
+	int					fd;
+}	t_redir_node;
+
 	/*	str_utils	*/
 char	*ft_strdup(char *s);
 char	*ft_strndup(const char *str, int size);
 int		ft_strlen(char *str);
 int		not_in(char c, char *str);
+int		ft_strcmp(char *s1, char *s2);
 
 	/*	tokenizer_utils	*/
 void	drop_tokens(t_token **tokens);
@@ -80,6 +90,7 @@ t_token	*create_token(int type, char *value);
 t_token *get_token(t_token **tokens, int i);
 void		drop_token(t_token *token);
 int	has_redirections(t_token *tokens);
+int	peek(t_token *tokens, int type);
 
 
 
@@ -94,3 +105,6 @@ void	push_back(t_token **tokens, t_token *token);
 
 	/*	sanitizer	*/
 int		sanitize_quote(t_token **tokens);
+
+	/*	parser	*/
+t_cmd_tree	*parse_redirs(t_token **tokens, t_cmd_tree	*cmd);

@@ -18,24 +18,6 @@ void drop_token(t_token *token)
 	free(token);
 }
 
-t_token *get_token(t_token **tokens, int i)
-{
-	t_token	*tmp;
-	t_token	*ret;
-	t_token	*tmp2;
-
-	tmp = *tokens;
-	while (i-- > 0)
-	{
-		tmp = tmp->next;
-	}
-	ret = tmp;
-	tmp2 = tmp;
-	tmp->prev->next = tmp->next;
-	tmp2->next->prev = tmp2->prev;
-	return (ret);
-}
-
 t_token	*create_token(int type, char *value)
 {
 	t_token	*token;
@@ -47,6 +29,7 @@ t_token	*create_token(int type, char *value)
 	token->value = value;
 	token->next = 0x0;
 	token->prev = 0x0;
+	token->visited = 0;
 	return (token);
 }
 

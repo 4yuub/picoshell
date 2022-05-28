@@ -28,7 +28,7 @@ int main(int ac, char **av, char **env)
 			break ;
 		if (!tokenize(&tokens, cmd))
 			continue;
-		if (!parse(tokens))
+		if (!parse_redirs(&tokens, 0x0))
 			continue;
 		print_tokens(tokens);
 		printf("\n------\n");
