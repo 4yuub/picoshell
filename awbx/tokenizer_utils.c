@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:05:12 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/23 14:40:57 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/06/07 19:01:26 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ t_token	*create_token(int type, char *value)
 	token->value = value;
 	token->next = 0x0;
 	token->prev = 0x0;
-	token->visited = 0;
 	return (token);
 }
 
@@ -120,11 +119,6 @@ int is_dollar(char *line, t_token **tokens)
 {
 	if (!*line)
 		return (0);
-	if (*line == '$' && *(line + 1) == '?')
-	{
-		push_back(tokens, create_token(RET, ft_strdup("$?"))); // to be freed
-		return (2);
-	}
 	push_back(tokens, create_token(DOLLAR, ft_strdup("$"))); // to be freed
 	return (1);
 }
@@ -192,7 +186,7 @@ int is_wildcard(char *line, t_token **tokens)
 		return (0);
 	i = 0;
 	if (line[i] == '*')
-		push_back(tokens, create_token(WILDCARD, ft_strdup("*?"))); // to be freed
+		push_back(tokens, create_token(WILDCARD, ft_strdup("*"))); // to be freed
 	return (1);
 }
 

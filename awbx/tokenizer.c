@@ -6,7 +6,7 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 10:02:22 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/20 19:39:24 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/06/07 19:06:02 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,17 +73,6 @@ int tokenize(t_token **tokens, char *line)
 			i += is_rparen(&line[i], tokens);
 		else if (not_in(line[i], " ><'\"$|?&*()"))
 			i += is_word(&line[i], tokens);
-		else
-		{
-			flag = 1;
-			push_back(tokens, create_token(UNHANDLED, ft_strndup(&line[i], 1))); // to be freed
-			res = 0;
-			break;
-		}
 	}
-	if (flag)
-		drop_tokens(tokens);
 	return (res);
 }
-
-

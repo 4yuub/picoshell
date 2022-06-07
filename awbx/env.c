@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int get_index(char *env_var, char to_find)
+int	get_index(char *env_var, char to_find)
 {
 	int	i;
 
@@ -46,10 +46,10 @@ char	*get_key(char *envp, int index)
 	return (key);
 }
 
-char *get_value(char *envp, int index)
+char	*get_value(char *envp, int index)
 {
 	char	*value;
-	int	i;
+	int		i;
 
 	value = malloc(sizeof(char) * (ft_strlen(envp) - index));
 	if (!value)
@@ -64,9 +64,9 @@ char *get_value(char *envp, int index)
 	return (value);
 }
 
-void add_env(t_env **env, t_env *new)
+void	add_env(t_env **env, t_env *new)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	if (!*env)
 	{
@@ -79,7 +79,7 @@ void add_env(t_env **env, t_env *new)
 	tmp->next = new;
 }
 
-void get_env_list(t_env **env, char **envp)
+void	get_env_list(t_env **env, char **envp)
 {
 	int			i;
 	char		*key;
@@ -91,7 +91,7 @@ void get_env_list(t_env **env, char **envp)
 	{
 		key = get_key(envp[i], get_index(envp[i], '=')); // to be freed
 		value = get_value(envp[i], get_index(envp[i], '=') + 1); // to be freed
-		new = malloc(sizeof(t_env));	// to be freed
+		new	= malloc(sizeof(t_env));	// to be freed
 		if (!new)
 			return ;
 		new->key = key;

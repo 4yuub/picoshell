@@ -6,128 +6,76 @@
 /*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 20:12:52 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/05/23 15:04:12 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/06/07 18:59:46 by yakhoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*change_value(t_token *old, char *value)
+t_token	*check_word(t_token *tokens)
 {
-	free(old->value);
-	old->value = ft_strdup(value);
-	old->type = WORD;
-	return (old);
-}
+	t_token	*ret;
 
-void expande(t_token *token, t_env *list)
-{
-	if (!token || !list)
-		return ;
-	while (list)
+	ret = 0x0;
+	if (tokens && (tokens->type == WSPACE))
+		tokens = tokens->next;
+	if (tokens && (tokens->type == WORD || tokens->type == QUOTE
+			||tokens->type == DQUOTE || tokens->type == WILDCARD
+			|| tokens->type == DOLLAR || tokens->type == RET))
 	{
-		if (ft_strcmp(list->key, token->value))
-		{
-				token = change_value(token, list->value);
-				return ;
-		}
-		list = list->next;
+		if (tokens && tokens->next && (tokens->type == DOLLAR
+				&& (tokens->next->type == WORD || tokens->next->type == RET)))
+			tokens = tokens->next;
+		return (tokens);
 	}
+	return (0x0);
 }
 
-t_cmd_tree	*redir_cmd(t_cmd_tree *sub, char *file, int flag, int fd)
+t_cmd_tree	*parse_exec(t_token *tokens)
 {
-	t_redir_node	*node;
+	t_exec_node	*ex;
 
-	node = malloc(sizeof(t_redir_node));
-	if (!node)
+	ex = 0x0;
+	tokens = check_word(tokens);
+	if (tokens)
+	{
+		ex = malloc(sizeof(t_exec_node));
+		if (!ex)
+			return (0x0);
+		ex->type = EXEC;
+		ex->tcmd = tokens;
+		ex->cmd = 0x0;
+		ex->args = 0x0;
+	}
+	else
+	{
 		return (0x0);
-	node->fd = fd;
-	node->file = file;
-	node->flag = flag;
-	node->sub = sub;
-	return ((t_cmd_tree *) node);
+	}
+	tokens = tokens->next;
+	tokens = check_word(tokens);
+	if (tokens)
+		ex->targs = tokens;
+	else
+		ex->args = 0x0;
+	return ((t_cmd_tree *) ex);
 }
 
-t_cmd_tree	*parse_redirs(t_token **tokens, t_cmd_tree	*cmd)
+t_cmd_tree	*parse_redir(t_token *tokens)
 {
-	t_token	*tmp;
-	int	i;
+	t_redir_node	*re;
 
-	if (!tokens || !*tokens)
-		return (0x0);
-	tmp = *tokens;
-	i = 0;
-	while (tmp)
+	if (tokens && tokens->type == WSPACE)
+		tokens = tokens->next;
+	if (tokens && (tokens->type == GREAT || tokens->type == LESS || tokens->type == APPEND))
 	{
-		if (tmp && tmp->type == GREAT)
-		{
-			if (tmp->next && tmp->next->type == WSPACE)
-				tmp = tmp->next;
-			tmp = tmp->next;
-			if (!tmp || (tmp->type != WORD && tmp->type != DOLLAR && tmp->type != QUOTE && tmp->type != DQUOTE))
-			{
-				printf("missing file for redirection\n");
-				return (0x0);
-			}
-		}
-		else if (tmp && tmp->type == LESS)
-		{
-			if (tmp->next && tmp->next->type == WSPACE)
-				tmp = tmp->next;
-			tmp = tmp->next;
-			if (!tmp || (tmp->type != WORD && tmp->type != DOLLAR && tmp->type != QUOTE && tmp->type != DQUOTE))
-			{
-				printf("missing file for redirection\n");
-				return (0x0);
-			}
-		}
-		else if (tmp && tmp->type == APPEND)
-		{
-			if (tmp->next && tmp->next->type == WSPACE)
-				tmp = tmp->next;
-			tmp = tmp->next;
-			if (!tmp || (tmp->type != WORD && tmp->type != DOLLAR && tmp->type != QUOTE && tmp->type != DQUOTE))
-			{
-				printf("missing file for redirection\n");
-				return (0x0);
-			}
-		}
-		else if (tmp && tmp->type == HERDOC)
-		{
-			if (tmp->next && tmp->next->type == WSPACE)
-				tmp = tmp->next;
-			tmp = tmp->next;
-			if (!tmp || (tmp->type != WORD && tmp->type != DOLLAR && tmp->type != QUOTE && tmp->type != DQUOTE))
-			{
-				printf("missing delimiter\n");
-				return (0x0);
-			}
-		}
-		if (tmp)
-			tmp = tmp->next;
+		tokens = tokens->next;
+		if (tokens && tokens->type == WSPACE)
+			tokens = tokens->next;
+		if (tokens && (tokens->type == WORD || tokens->type == QUOTE
+					|| tokens->type == DQUOTE ||
+					tokens->type == WILDCARD || tokens->type == RET))
+			return (0);
 	}
-	tmp = *tokens;
-	while (tmp)
-	{
-		if (tmp && tmp->type == GREAT && !tmp->visited)
-		{
-			tmp->visited = 1;
-			if (tmp->next && tmp->next->type == WSPACE)
-			{
-				tmp = tmp->next;
-				tmp->visited = 1;
-			}
-			tmp = tmp->next;
-			if (tmp && !tmp->visited && (tmp->type == WORD || tmp->type == DOLLAR || tmp->type == QUOTE || tmp->type == DQUOTE))
-			{
-				tmp->visited = 1;
-				cmd = redir_cmd(cmd, ft_strdup(tmp->value), O_CREAT | O_TRUNC | O_RDONLY, 1);
-			}
-		}
-		if (tmp)
-			tmp = tmp->next;
-	}
-
-	// herdoc is very different from other redirections so it will be treated differently
+	return 0;
+		
 }

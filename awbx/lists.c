@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void push_back(t_token **tokens, t_token *token)
+void	push_back(t_token **tokens, t_token *token)
 {
 	t_token	*tmp;
 
@@ -26,5 +26,4 @@ void push_back(t_token **tokens, t_token *token)
 		tmp = tmp->next;
 	tmp->next = token;
 	token->prev = tmp;
-
 }
