@@ -32,6 +32,13 @@ t_token	*create_token(int type, char *value)
 	return (token);
 }
 
+t_token	*get_token(t_token *tokens)
+{
+	if (tokens && tokens->type == WSPACE)
+		tokens = tokens->next;
+	return (tokens);
+}
+
 int	is_space(char *line, t_token	**tokens)
 {
 	int	i;

@@ -39,6 +39,14 @@ typedef enum e_tokens
 	WORD,
 }	t_types;
 
+typedef struct s_token
+{
+	int				type;
+	char			*value;
+	struct s_token	*next;
+	struct s_token	*prev;
+}	t_token;
+
 typedef struct s_minishell
 {
 	int exit_status;
@@ -60,14 +68,6 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-typedef struct s_token
-{
-	int				type;
-	char			*value;
-	struct s_token	*next;
-	struct s_token	*prev;
-}	t_token;
-
 typedef struct s_cmd_tree
 {
 	int	type;
@@ -88,6 +88,12 @@ typedef struct s_pipe_node
 	t_cmd_tree	*left;
 	t_cmd_tree	*right;
 }	t_pipe_node;
+
+typedef struct s_parser_res
+{
+	t_token	*current;
+	t_cmd_tree	*tree;
+}	t_parser_res;
 
 typedef struct s_exec_node
 {
@@ -118,7 +124,7 @@ int			is_lparen(char *line, t_token **tokens);
 int			is_rparen(char *line, t_token **tokens);
 int			is_word(char *line, t_token **tokens);
 t_token		*create_token(int type, char *value);
-t_token		*get_token(t_token **tokens, int i);
+t_token		*get_token(t_token *tokens);
 void		drop_token(t_token *token);
 int			has_redirections(t_token *tokens);
 int			peek(t_token *tokens, int type);
@@ -135,7 +141,7 @@ void		push_back(t_token **tokens, t_token *token);
 int			sanitize_quote(t_token **tokens);
 
 	/*	parser	*/
-t_cmd_tree	*parse_redirs(t_token *tokens, t_cmd_tree	*cmd);
-t_cmd_tree	*parse_exec(t_token *tokens);
+t_parser_res	*parse_redir(t_parser_res *ret);
+t_parser_res	*parse_exec(t_parser_res *tokens);
 t_cmd_tree	*parse_pipe(t_token	*tokens);
 #endif
