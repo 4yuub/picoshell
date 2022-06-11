@@ -16,25 +16,34 @@ t_minishell g_minishell;
 
 void print_tree(t_cmd_tree *a)
 {
-	if (a->type == EXEC)
+	if (a && a->type == EXEC)
 	{
+		printf("exec ");
 		t_exec_node *b = (t_exec_node *) a;
 		if (b->tcmd)
 			printf("%s : ", b->tcmd->value);
 		if (b->targs)
-			printf("%s", b->targs->value);
+			printf("%s\n", b->targs->value);
+		printf("args count : %d\n", b->args_count);
 		printf("\n");
 	}
-	else if (a->type == REDIR)
+	else if (a && a->type == REDIR)
 	{
 		t_redir_node *b = (t_redir_node *) a;
 		if (b)
 		{
-			printf("%s : \n", b->tok->value);
+			printf("redir : %s\n", b->tok->value);
 			if (b->sub)
 				print_tree(b->sub);
 		}
 	}
+	else if (a && a->type == PI)
+	{
+		t_pipe_node *b = (t_pipe_node *) a;
+		print_tree(b->left);
+		print_tree(b->right);
+	}
+
 }
 
 void print_tokens(t_token *tokens);
@@ -53,6 +62,8 @@ int analyse(t_token *tokens)
 						tokens->value[0] == ')' || tokens->value[0] == '>' ||
 						tokens->value[0] == '<'))
 				return (0);
+			else if (!tokens)
+				return (0);
 		}
 		// need to check herdoc
 		if (tokens)
@@ -70,6 +81,9 @@ int	main(int ac, char **av, char **env)
 
 	tokens = 0x0;
 	env_list = 0x0;
+	g_minishell.on_error = 0;
+	res.current = 0x0;
+	res.tree = 0x0;
 	get_env_list(&env_list, env);
 	while (1)
 	{
@@ -84,10 +98,15 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		}
 		res.current = tokens;
-		t_parser_res *a = parse_exec(&res);
+		t_parser_res *a = parse_pipe(&res);
+		if (g_minishell.on_error)
+		{
+			printf("something_went_wrong\n");
+			continue;
+		}
 		print_tree(a->tree);
-		/** print_tokens(tokens); */
+		print_tokens(tokens);
 		/** printf("\n------\n"); */
-		/** print_rev_tokens(tokens);  */
+		/** print_rev_tokens(tokens); */
 	}
 }

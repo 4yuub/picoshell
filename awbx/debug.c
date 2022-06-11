@@ -31,7 +31,7 @@ void print_tokens(t_token *tokens)
 		else if (tokens->type == DQUOTE)
 			printf("[DQUOTE] :%s\n", tokens->value);
 		else if (tokens->type == DOLLAR)
-			printf("[DOLLAR]\n");
+			printf("[DOLLAR] : %s\n", tokens->value);
 		else if (tokens->type == PIPE)
 			printf("[PIPE]\n");
 		else if (tokens->type == OR)

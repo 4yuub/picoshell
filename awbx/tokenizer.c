@@ -55,16 +55,7 @@ int tokenize(t_token **tokens, char *line)
 		else if (line[i] == '|')
 			i += is_pipe(&line[i], tokens);
 		else if (line[i] == '&')
-		{
-			tmp = is_and(&line[i], tokens);	
-			if (tmp == 1)
-			{
-					res = 0;
-					break;
-			}
-			else
-				i += tmp;
-		}
+			i += is_and(&line[i], tokens);	
 		else if (line[i] == '*')
 			i += is_wildcard(&line[i], tokens);
 		else if (line[i] == '(')

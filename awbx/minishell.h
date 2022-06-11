@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <unistd.h>
 # include <readline/readline.h>
 
 typedef enum e_tokens
@@ -50,6 +51,7 @@ typedef struct s_token
 typedef struct s_minishell
 {
 	int exit_status;
+	int	on_error;
 }	t_minishell;
 
 extern t_minishell g_minishell;
@@ -76,6 +78,7 @@ typedef struct s_cmd_tree
 typedef struct s_redir_node
 {
 	int			type;
+	int			redir_type;
 	t_cmd_tree	*sub;
 	t_token		*tok;
 	int			flag;
@@ -102,6 +105,7 @@ typedef struct s_exec_node
 	char	*cmd;
 	char	**args;
 	t_token	*targs;
+	int	args_count;
 }	t_exec_node;
 	/*	str_utils	*/
 char		*ft_strdup(char *s);
@@ -142,6 +146,6 @@ int			sanitize_quote(t_token **tokens);
 
 	/*	parser	*/
 t_parser_res	*parse_redir(t_parser_res *ret);
-t_parser_res	*parse_exec(t_parser_res *tokens);
-t_cmd_tree	*parse_pipe(t_token	*tokens);
+t_parser_res	*parse_exec(t_parser_res *ret);
+t_parser_res	*parse_pipe(t_parser_res *ret);
 #endif

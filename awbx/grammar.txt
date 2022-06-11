@@ -1,1 +1,6 @@
-redir ::= {}+ cmd {}+
+and_or ::= pipe {&& pipe}+
+		| pipe {|| pipe}+
+pipe ::= exec {| exec}+
+exec ::= {redir}+ cmd {redir}+
+	 |   ( cmd )
+redir ::= {> >> << <} file

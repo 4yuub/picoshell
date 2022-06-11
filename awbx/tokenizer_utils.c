@@ -124,10 +124,25 @@ int is_dquote(char *line, t_token **tokens)
 
 int is_dollar(char *line, t_token **tokens)
 {
+	int	i;
+
 	if (!*line)
 		return (0);
-	push_back(tokens, create_token(DOLLAR, ft_strdup("$"))); // to be freed
-	return (1);
+	i = 1;
+	while (line[i] != '\0' && line[i] != '(' && line[i] != ')' &&
+			line[i] != '>' && line[i] != '<' && line[i] != '|' &&
+			line[i] != '&' && line[i] != ' ')
+		i += 1;
+	if (i == 1)
+	{
+		push_back(tokens, create_token(DOLLAR, ft_strdup("$"))); // to be freed
+		return (1);
+	}
+	else
+	{
+		push_back(tokens, create_token(DOLLAR, ft_strndup(line + 1, i - 1)));
+		return (i);
+	}
 }
 
 int is_pipe(char *line, t_token **tokens)
@@ -158,8 +173,7 @@ int is_and(char *line, t_token **tokens)
 		push_back(tokens, create_token(AND, ft_strdup("&&"))); // to be freed
 		return (2);
 	}
-	push_back(tokens, create_token(UNHANDLED, ft_strdup("&"))); // to be freed
-	drop_tokens(tokens);
+	push_back(tokens, create_token(WORD, ft_strdup("&"))); // to be freed
 	return (1);
 }
 
