@@ -61,6 +61,8 @@ typedef enum e_nodes
 	REDIR,
 	EXEC,
 	PI,
+	ANDD,
+	ORR,
 }	t_nodes;
 
 typedef struct s_env
@@ -92,6 +94,19 @@ typedef struct s_pipe_node
 	t_cmd_tree	*right;
 }	t_pipe_node;
 
+typedef struct s_and_node
+{
+	int			type;
+	t_cmd_tree	*left;
+	t_cmd_tree	*right;
+}	t_and_node;
+
+typedef struct s_or_node
+{
+	int			type;
+	t_cmd_tree	*left;
+	t_cmd_tree	*right;
+}	t_or_node;
 typedef struct s_parser_res
 {
 	t_token	*current;
@@ -103,18 +118,20 @@ typedef struct s_exec_node
 	int		type;
 	t_token	*tcmd;
 	char	*cmd;
-	char	**args;
+	char	*args;
 	t_token	*targs;
 	int	args_count;
 }	t_exec_node;
 	/*	str_utils	*/
 char		*ft_strdup(char *s);
 char		*ft_strndup(const char *str, int size);
-int			ft_strlen(char *str);
+size_t		ft_strlen(const char *str);
 int			not_in(char c, char *str);
 int			ft_strcmp(char *s1, char *s2);
+char		*ft_strjoin(char const *s1, char const *s2);
+size_t		ft_strlcat(char *dst, const char *src, size_t dstsize);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 	/*	tokenizer_utils	*/
-void		drop_tokens(t_token **tokens);
 int			is_space(char *line, t_token **tokens);
 int			is_great(char *line, t_token **tokens);
 int			is_less(char *line, t_token **tokens);
@@ -148,4 +165,6 @@ int			sanitize_quote(t_token **tokens);
 t_parser_res	*parse_redir(t_parser_res *ret);
 t_parser_res	*parse_exec(t_parser_res *ret);
 t_parser_res	*parse_pipe(t_parser_res *ret);
+t_parser_res	*parse_and_or(t_parser_res	*parser);
+t_parser_res	*parse_cmd(t_parser_res *parser);
 #endif

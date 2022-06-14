@@ -62,7 +62,7 @@ int tokenize(t_token **tokens, char *line)
 			i += is_lparen(&line[i], tokens);
 		else if (line[i] == ')')
 			i += is_rparen(&line[i], tokens);
-		else if (not_in(line[i], " ><'\"$|?&*()"))
+		else if (not_in(line[i], " ><'\"$|&*()"))
 			i += is_word(&line[i], tokens);
 	}
 	return (res);

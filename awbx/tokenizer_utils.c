@@ -177,28 +177,6 @@ int is_and(char *line, t_token **tokens)
 	return (1);
 }
 
-void drop_tokens(t_token **tokens)
-{
-	t_token *next;
-	t_token	*tmp;
-
-	tmp = *tokens;
-	while (tmp->next)
-	{
-		next = tmp->next;
-		free(tmp->value);
-		free(tmp);
-		tmp = next;
-	}
-	if (tmp)
-	{
-		printf("unhandled token : %s\n", tmp->value); // output to stderr
-		free(tmp->value);
-		free(tmp);
-		*tokens = 0x0;
-	}
-}
-
 int is_wildcard(char *line, t_token **tokens)
 {
 	int i;
@@ -236,7 +214,7 @@ int is_word(char *line, t_token **tokens)
 	if (!*line)
 		return (0);
 	i = 0;
-	while (line[i] != '\0' && not_in(line[i], " ><'\"$|?&*()"))
+	while (line[i] != '\0' && not_in(line[i], " ><'\"$|&*()"))
 		i++;
 	push_back(tokens, create_token(WORD, ft_strndup(line, i))); // to be freed
 	return (i);
