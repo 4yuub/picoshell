@@ -14,12 +14,13 @@
 
 t_minishell g_minishell;
 
-
-char	*join_args(t_token *tokens, int args_count)
+char	*expande(char *str, t_env *env_list);
+char	*join_args(t_token *tokens, int args_count, t_env *env_list)
 {
 	char		*res;
 	char		*tmp;
 	char		*tmp2;
+	char		*filtered;
 	
 
 	res = 0x0;
@@ -28,8 +29,10 @@ char	*join_args(t_token *tokens, int args_count)
 	while (args_count-- > 0)
 	{
 		tmp = res;
-		res = ft_strjoin(res, tokens->value);
+		filtered = expande(tokens->value, env_list);
+		res = ft_strjoin(res, filtered);
 		free(tmp);
+		free(filtered);
 		tmp2 = ft_strjoin(res, " ");
 		free(res);
 		res = tmp2;
@@ -38,7 +41,7 @@ char	*join_args(t_token *tokens, int args_count)
 	return ((char *) res);
 }
 
-void print_tree(t_cmd_tree *a)
+void print_tree(t_cmd_tree *a, t_env *list)
 {
 	if (a && a->type == EXEC)
 	{
@@ -48,7 +51,7 @@ void print_tree(t_cmd_tree *a)
 			printf("%s : ", b->tcmd->value);
 		if (b->targs)
 		{
-			b->args = join_args(b->targs, b->args_count);
+			b->args = join_args(b->targs, b->args_count, list);
 			printf("args : %s\n", b->args);
 		}
 		printf("args count : %d\n", b->args_count);
@@ -61,40 +64,82 @@ void print_tree(t_cmd_tree *a)
 		{
 			printf("redir : %s\n", b->tok->value);
 			if (b->sub)
-				print_tree(b->sub);
+				print_tree(b->sub, list);
 		}
 	}
 	else if (a && a->type == PI)
 	{
 		t_pipe_node *b = (t_pipe_node *) a;
-		print_tree(b->left);
-		print_tree(b->right);
+		print_tree(b->left, list);
+		print_tree(b->right, list);
 	}
 	else if (a && a->type == ANDD)
 	{
 		t_and_node *b = (t_and_node *) a;
-		print_tree(b->left);
-		print_tree(b->right);
+		print_tree(b->left, list);
+		print_tree(b->right, list);
 	}
 	else if (a && a->type == ORR)
 	{
 		t_or_node *b = (t_or_node *) a;
-		print_tree(b->left);
-		print_tree(b->right);
+		print_tree(b->left, list);
+		print_tree(b->right, list);
 	}
 }
 
-void expand_args(t_token *tokens)
-{
-	while (args_count-- > 0)
-	{
-		if (tokens->type == DQUOTE || tokens->type == DOLLAR)
-			expand_word(tokens->value);
-		tokens = tokens->next;
-	}
-
 void print_tokens(t_token *tokens);
 void print_rev_tokens(t_token *tokens);
+
+char *get_val(char *str, t_env *env_list)
+{
+	while (env_list)
+	{
+		if (ft_strcmp(env_list->key, str))
+		{
+			free(str);
+			return (env_list->value);
+		}
+		env_list = env_list->next;
+	}
+	free(str);
+	return (ft_strdup(""));
+}
+
+char	*expande(char *str, t_env *env_list)
+{
+	int			i;
+	int			j;
+	const char	*res = 0x0;
+	char		*tmp;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+		{
+			i += 1;
+			if (str[i] == ' ' || str[i] == '\0')
+				res = ft_strjoin(res, "$");
+			else
+			{
+				j = i;
+				while (str[i] && str[i] != ' ' && str[i] != '$')
+					i += 1;
+				res = ft_strjoin(res, get_val(ft_strndup(str + j, i - j),  env_list));
+			}
+		}
+		else
+		{
+			j = i;
+			while (str[i] && str[i] != '$')
+				i += 1;
+			tmp = ft_strndup(str + j, i - j);
+			res = ft_strjoin(res, tmp);
+			free(tmp);
+		}
+	}
+	return ((char *) res);
+}
 
 int check_redir(t_token *tokens)
 {
@@ -104,7 +149,7 @@ int check_redir(t_token *tokens)
 	if ((tokens && ((tokens->type == WORD && tokens->value[0] == '&') || tokens->type == PIPE ||
 				tokens->type == WILDCARD || tokens->type == LPAR ||
 				tokens->type == RPAR || tokens->type == GREAT||
-				tokens->type == LESS || tokens->type == APPEND)) || !tokens)
+				tokens->type == LESS || tokens->type == APPEND || tokens->type == AND)) || !tokens)
 		res = 0;
 	return (res);
 }
@@ -117,7 +162,7 @@ int	check_herdoc(t_token *tokens)
 	if ((tokens && ((tokens->type == WORD && tokens->value[0] == '&') || tokens->type == PIPE ||
 				tokens->type == LPAR ||
 				tokens->type == RPAR || tokens->type == GREAT||
-				tokens->type == LESS || tokens->type == APPEND)) || !tokens)
+				tokens->type == LESS || tokens->type == APPEND || tokens->type == AND)) || !tokens)
 		res = 0;
 	return (res);
 }
@@ -163,6 +208,12 @@ int	main(int ac, char **av, char **env)
 
 	ft_init(&res, env_list, tokens);
 	get_env_list(&env_list, env);
+	/** while (1) */
+	/** { */
+	/**     char *bu = readline(">"); */
+	/**     char *r = expande(bu, env_list); */
+	/**     printf("%s\n", r); */
+	/** } */
 	while (1)
 	{
 		cmd = readline("awbx$ "); // to be freed
@@ -182,9 +233,10 @@ int	main(int ac, char **av, char **env)
 			printf("something_went_wrong\n");
 			continue;
 		}
-		print_tree(a->tree);
-		print_tokens(tokens);
+		print_tree(a->tree, env_list);
+	}
+	/**     print_tokens(tokens); */
 		/** printf("\n------\n"); */
 		/** print_rev_tokens(tokens); */
-	}
+	/** } */
 }

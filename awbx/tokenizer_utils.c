@@ -140,7 +140,7 @@ int is_dollar(char *line, t_token **tokens)
 	}
 	else
 	{
-		push_back(tokens, create_token(DOLLAR, ft_strndup(line + 1, i - 1)));
+		push_back(tokens, create_token(DOLLAR, ft_strndup(line, i)));
 		return (i);
 	}
 }
