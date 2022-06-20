@@ -1,6 +1,8 @@
+cmd ::= and_or
 and_or ::= pipe {&& pipe}+
 		| pipe {|| pipe}+
-pipe ::= exec {| exec}+
-exec ::= {redir}+ cmd {redir}+
-	 |   ( cmd )
-redir ::= {> >> << <} file
+pipe ::= redir {| exec}+
+redir ::= {< >> << < WORD}+ exec {< >> << < WORD}+
+exec ::= command {args}+ | "(" cmd ")"
+command ::= WORD | DOLLAR | QUOTE | DQUOTE
+args ::= WORD | DOLLAR | QUOTE | DQUOTE
