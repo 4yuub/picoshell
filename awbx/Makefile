@@ -12,11 +12,11 @@
 
 NAME = minishell
 HEADERS = minishell.h
-SRCS = debug.c env.c lists.c main.c parser.c str_utils.c tokenizer.c tokenizer_utils.c
+SRCS = debug.c env.c lists.c main.c parser.c str_utils.c tokenizer.c tokenizer_utils.c execution.c
 OBJS := $(SRCS:.c=.o)
 RM = rm -rf
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 LFLAGS = -lreadline
 
 all: $(NAME)
@@ -32,3 +32,5 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
+
+re: fclean all

@@ -167,4 +167,7 @@ t_parser_res	*parse_exec(t_parser_res *ret);
 t_parser_res	*parse_pipe(t_parser_res *ret);
 t_parser_res	*parse_and_or(t_parser_res	*parser);
 t_parser_res	*parse_cmd(t_parser_res *parser);
+
+ /* execute tree */
+void					execute_tree(t_cmd_tree *tree, t_env *env_list);
 #endif

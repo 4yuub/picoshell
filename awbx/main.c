@@ -205,9 +205,11 @@ int	main(int ac, char **av, char **env)
 	t_env		*env_list;
 	t_token		*tokens;
 	t_parser_res	res;
+	int				io[2];
 
 	env_list = NULL;
 	tokens = NULL;
+
 	(void) av;
 	if (ac != 1)
 	{
@@ -241,7 +243,16 @@ int	main(int ac, char **av, char **env)
 			printf("something_went_wrong\n");
 			continue;
 		}
-		print_tree(a->tree, env_list);
+		io[0] = dup(STDIN_FILENO);
+		io[1] = dup(STDOUT_FILENO);
+		execute_tree(a->tree, env_list);
+		//print_tree(a->tree, env_list);
+		tokens = NULL; // free
+		g_minishell.on_error = 0;
+		dup2(io[0], STDIN_FILENO);
+		dup2(io[1], STDOUT_FILENO);
+		close(io[0]);
+		close(io[1]);
 	}
 	/**     print_tokens(tokens); */
 		/** printf("\n------\n"); */
