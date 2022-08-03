@@ -206,6 +206,14 @@ int	main(int ac, char **av, char **env)
 	t_token		*tokens;
 	t_parser_res	res;
 
+	env_list = NULL;
+	tokens = NULL;
+	(void) av;
+	if (ac != 1)
+	{
+		write(2, "Can't run minishell with args\n",ft_strlen("Can't run minishell with args\n"));
+		return 1;
+	}
 	ft_init(&res, env_list, tokens);
 	get_env_list(&env_list, env);
 	/** while (1) */
