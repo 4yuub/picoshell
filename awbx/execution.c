@@ -106,8 +106,37 @@ void execute_redir(t_redir_node *node, t_env *env_list)
 	cmd = NULL;
 	if (flag)
 		cmd = get_cmd(node);
-	// execute cmd;
 	execute_tree((t_cmd_tree *) cmd, env_list);
+}
+
+int	is_builtin(char *cmd)
+{
+	if (!strmpd)
+}
+
+void	execute_exec(t_exec_node *cmd, t_env *env_list) 
+{
+	int		i;
+	int		id;
+	char	**cmd_list;
+
+	cmd_list = malloc(sizeof(char *) * (cmd->args_count + 2));
+	cmd_list[0] = cmd->tcmd->value; // get path
+	i = 1;
+	while (cmd->targs)
+	{
+		cmd_list[i++] = cmd->targs->value;
+		cmd->targs = cmd->targs->next;
+	}
+	cmd_list[i] = NULL;
+	(void) env_list;
+	if (!is_builtin(cmd_list[0])) {
+		id = fork();
+		if (id == 0)
+			execvp(*cmd_list, cmd_list);
+		else
+			wait(NULL);
+	}
 }
 
 void	execute_tree(t_cmd_tree *tree, t_env *env_list)
@@ -136,6 +165,6 @@ void	execute_tree(t_cmd_tree *tree, t_env *env_list)
 	}
 	else if (tree->type == EXEC)
 	{
-		printf("Executing ...\n");
+		execute_exec((t_exec_node*)tree, env_list);
 	}
 }
