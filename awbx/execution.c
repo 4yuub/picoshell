@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakhoudr <yakhoudr@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: akarafi <akarafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 14:46:58 by yakhoudr          #+#    #+#             */
-/*   Updated: 2022/08/03 14:46:58 by yakhoudr         ###   ########.fr       */
+/*   Updated: 2022/08/04 03:27:52 by akarafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,34 @@ void execute_redir(t_redir_node *node, t_env *env_list)
 	execute_tree((t_cmd_tree *) cmd, env_list);
 }
 
-int	is_builtin(char *cmd)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	if (!strmpd)
+	size_t	i;
+
+	i = -1;
+	while (++i < n && (s1[i] || s2[i]))
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	return (0);
+}
+
+bool	is_builtin(char *cmd)
+{
+	if (!ft_strncmp(cmd, "echo", sizeof("echo") + 1))
+		return (true);
+	else if (!ft_strncmp(cmd, "cd", sizeof("cd") + 1))
+		return (true);
+	else if (!ft_strncmp(cmd, "pwd", sizeof("pwd") + 1))
+		return (true);
+	if (!ft_strncmp(cmd, "unset", sizeof("unset") + 1))
+		return (true);
+	if (!ft_strncmp(cmd, "env", sizeof("env") + 1))
+		return (true);
+	if (!ft_strncmp(cmd, "export", sizeof("export") + 1))
+		return (true);
+	if (!ft_strncmp(cmd, "exit", sizeof("exit") + 1))
+		return (true);
+	return (false);
 }
 
 void	execute_exec(t_exec_node *cmd, t_env *env_list) 
@@ -136,7 +161,9 @@ void	execute_exec(t_exec_node *cmd, t_env *env_list)
 			execvp(*cmd_list, cmd_list);
 		else
 			wait(NULL);
+		return ;
 	}
+	// run builtin cmd
 }
 
 void	execute_tree(t_cmd_tree *tree, t_env *env_list)
